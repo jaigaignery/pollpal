@@ -47,4 +47,10 @@ app.get("/:id", (req, res) => {
   }
 });
 
+app.get("/data/:id", (req, res) => {
+  const { id } = req.params;
+  const data = readDb()[id];
+  res.status(200).send({ data });
+});
+
 app.listen(port, () => console.log(`Server has started on port: ${port}`));
