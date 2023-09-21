@@ -184,10 +184,9 @@
 
       async function handleSubmit(e) {
         const question = document.getElementById("question").value;
-        const options = new Set(
+        const options = 
           Array.from(document.querySelectorAll(".options")).map(
             (option) => option.value
-          )
         );
 
         const idsRes = await fetch("/ids");
