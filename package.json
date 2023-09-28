@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon server.js",
+    "dev": "nodemon --ignore lib/db.json server.js ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,5 +15,10 @@
   },
   "devDependencies": {
     "nodemon": "3.0.1"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "db.json"
+    ]
   }
 }

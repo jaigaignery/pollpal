@@ -15,18 +15,17 @@ app.post("/", (req, res) => {
     res.status(400).send({ status: "error" });
   }
 
-  console.log(id, question, options);
   const currentPolls = readDb();
   writeDb({
     ...currentPolls,
     [id]: {
       question,
-      options: options.reduce((acc, curr) => {
+      options: Array.from(options).reduce((acc, curr) => {
         return { ...acc, [curr]: 0 };
       }, {}),
     },
   });
-  res.sendStatus(200);
+  res.redirect("/" + id);
 });
 
 app.get("/ids", (req, res) => {
@@ -51,6 +50,15 @@ app.get("/data/:id", (req, res) => {
   const { id } = req.params;
   const data = readDb()[id];
   res.status(200).send({ data });
+});
+
+app.post("/vote", (req, res) => {
+  console.log(req.body);
+  const { id, vote } = req.body;
+  const data = readDb();
+  data[id]["options"][vote] += 1;
+  writeDb(data);
+  res.sendStatus(200);
 });
 
 app.listen(port, () => console.log(`Server has started on port: ${port}`));

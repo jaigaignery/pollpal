@@ -130,10 +130,10 @@
       <h1></h1>
       <ul id="options"></ul>
     </main>
+    <footer><a href="/"><i class="fa-solid fa-house"></i></a></i></footer>
 
     <script>
       const id = window.location.pathname.replaceAll("/", "");
-
       const question = document.querySelector("main > h1");
       const optionsList = document.querySelector("ul");
       let optionsFromServer = [];
@@ -147,7 +147,7 @@
 
         const res = await fetch("/data/" + id);
         const { data } = await res.json();
-        console.log(data);
+
         optionsFromServer = data.options;
         question.innerText =
           data.question + (data.question.includes("?") ? "" : "?");
@@ -168,6 +168,7 @@
         const selected = index.target.id;
         const maxNumberOfVotes = Math.max(...Object.values(optionsFromServer));
         const optionsLi = document.querySelectorAll("li");
+
         optionsLi.forEach((val) => {
           const option = val.id;
           val.removeEventListener("click", pplClick);
@@ -188,6 +189,17 @@
                   : `${(optionsFromServer[option] / maxNumberOfVotes) * 100}%`;
             }
           }
+        });
+
+        const res = await fetch("/vote", {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            id,
+            vote: selected,
+          }),
         });
       }
     </script>
