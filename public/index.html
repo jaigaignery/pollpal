@@ -169,6 +169,8 @@
         label.innerHTML = `<i class="fa-solid fa-atom"></i> ${label.innerHTML}`;
       });
 
+      let optionCount = document.querySelectorAll(".options").length;
+
       const addBtn = document.getElementById("add");
       const form = document.querySelector("form");
       const btns = document.getElementById("buttons");
@@ -178,15 +180,17 @@
         form.insertBefore(newNode, btns);
         document.querySelector(
           "label:last-of-type"
-        ).innerHTML = `<i class="fa-solid fa-atom"></i> <input type="text" required class="options" placeholder="..."/>`;
+        ).innerHTML = `<i class="fa-solid fa-atom"></i> <input type="text" required class="options" placeholder="Option ${
+          optionCount + 1
+        }"/>`;
+        optionCount++;
       }
       addBtn.addEventListener("click", addOption);
 
       async function handleSubmit(e) {
         const question = document.getElementById("question").value;
-        const options = 
-          Array.from(document.querySelectorAll(".options")).map(
-            (option) => option.value
+        const options = Array.from(document.querySelectorAll(".options")).map(
+          (option) => option.value
         );
 
         const idsRes = await fetch("/ids");
@@ -204,7 +208,6 @@
             options,
           }),
         });
-
         window.location.href = `/${id}`;
       }
     </script>
