@@ -66,35 +66,40 @@
         width: 100%;
       }
 
-      ul div li {
+      li {
         text-transform: capitalize;
         list-style: none;
         user-select: none;
-        cursor: pointer;
-        width: 100%;
         border: 1px solid transparent;
-        padding: 8px;
         max-width: 100% !important;
-        min-width: fit-content;
-        color: white !important;
-      }
-
-      ul li i {
-        padding: 0 6px 0 0;
-        color: white !important;
-      }
-
-      ul div:hover {
-        background: black;
-      }
-
-      .lins {
-        background: linear-gradient(to right, navy, navy);
+        color: white;
+        z-index: 2; /* Set a higher z-index for li elements */
+        position: absolute; /* Ensure relative positioning */
+        margin-top: 15px;
+        margin-left: 10px;
+        top: 0;
       }
 
       .option-container {
-        padding: 0;
-        border: 1px solid grey;
+        padding: 1px;
+        border: 1px solid white;
+        position: relative;
+        min-height: 50px;
+      }
+
+      ul .option-container:hover {
+        background: black;
+        cursor: pointer;
+      }
+
+      .vote-meter {
+        position: relative; /* Ensure relative positioning */
+        width: 0%;
+        height: 50px;
+        margin: 2px; /* Adjust the margin as needed */
+        background-color: white;
+        opacity: 20%;
+        z-index: 1; /* Set a lower z-index for .vote-meter */
       }
 
       span {
@@ -162,18 +167,23 @@
 
         let newInnerListHTML = "";
         Object.keys(data.options).forEach((option, index) => {
-          newInnerListHTML += `<div class="option-container"><li id="${option}">${option}</li></div>`;
+          newInnerListHTML += `<div class="option-container" id="${option}"><div class="vote-meter">&nbsp;</div><li id="${option}">${option}</li></div>`;
         });
+
         optionsList.innerHTML = newInnerListHTML;
-        const optionsLi = document.querySelectorAll("li");
-        optionsLi.forEach((option) => {
-          option.addEventListener("click", pplClick);
-        });
+
+        const optionsContainers =
+          document.querySelectorAll(".option-container");
+
+        for (let i = 0; i < optionsContainers.length; i++) {
+          optionsContainers[i].addEventListener("click", pplClick);
+        }
       }
       onLoad();
 
       async function pplClick(index) {
         const selected = index.target.id;
+        console.log(selected);
         const totalVoteElement = document.querySelector("span");
         const voteValues = Object.values(optionsFromServer);
         const sumOfVotes =
@@ -183,28 +193,37 @@
           }, 0) + 1;
         totalVoteElement.innerHTML = `${sumOfVotes} total votes`;
         const optionsLi = document.querySelectorAll("li");
+        const voteMeters = document.querySelectorAll(".vote-meter");
+        const optionsContainers =
+          document.querySelectorAll(".option-container");
+        console.log(optionsContainers);
 
-        optionsLi.forEach((val) => {
+        for (let i = 0; i < optionsLi.length; i++) {
+          const val = optionsLi[i];
+          const voteMeterVal = voteMeters[i];
+          const optionsContainerVal = optionsContainers[i];
           const option = val.id;
           const votes = optionsFromServer[option];
           console.log(option, votes);
 
-          val.removeEventListener("click", pplClick);
-          val.classList.add("lins");
-          val.style.color = "#0f172a";
+          optionsContainerVal.removeEventListener("click", pplClick);
 
           if (sumOfVotes !== 0) {
             if (selected == option) {
-              val.style.width =
-                votes === 0 ? "0%" : `${((votes + 1) / sumOfVotes) * 100}%`;
+              voteMeterVal.style.width =
+                votes + 1 === 0 ? "0%" : `${((votes + 1) / sumOfVotes) * 100}%`;
+              val.style.color = "#7DF9FF";
+              voteMeterVal.style.backgroundColor = "#7DF9FF";
+              voteMeterVal.style.opacity = "20%";
+              optionsContainerVal.style.border = "1px solid #7DF9FF";
             } else {
-              val.style.width =
+              voteMeterVal.style.width =
                 optionsFromServer[option] === 0
                   ? "0%"
                   : `${(optionsFromServer[option] / sumOfVotes) * 100}%`;
             }
           }
-        });
+        }
 
         if (selected) {
           const res = await fetch("/vote", {
