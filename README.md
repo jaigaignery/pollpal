@@ -9,19 +9,17 @@ A hosted version of Pollpal can be found here:
 If you would like to install or inspect it on your machine you will need Git and Node.js installed.
 Once you have those installed, follow these instructions:
 
-```
-# Clone the GitHub repository:
-$ git clone https://github.com/jaigaignery/pollpal.git
+Clone the GitHub repository:
+`git clone https://github.com/jaigaignery/pollpal.git`
 
-# Navigate to your cloned directory:
-$ cd pollpal
+Navigate to your cloned directory:
+`$ cd pollpal`
 
-# Install the required Node.js dependencies:
-$ npm install
+Install the required Node.js dependencies:
+`$ npm install`
 
-# Run the application (runs on port 8383):
-$ npm run dev
-```
+Run the application (runs on port 8383):
+`$ npm run dev`
 
 ## Upcoming features
 
