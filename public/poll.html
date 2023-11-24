@@ -130,7 +130,9 @@
       <h1></h1>
       <ul id="options"></ul>
     </main>
-    <footer><a href="/"><i class="fa-solid fa-house"></i></a></i></footer>
+    <footer>
+      <a href="/"><i class="fa-solid fa-house"></i></a>
+    </footer>
 
     <script>
       const id = window.location.pathname.replaceAll("/", "");
@@ -166,41 +168,48 @@
 
       async function pplClick(index) {
         const selected = index.target.id;
-        const maxNumberOfVotes = Math.max(...Object.values(optionsFromServer));
+        const voteValues = Object.values(optionsFromServer);
+        const sumOfVotes =
+          voteValues.reduce((sum, votes) => {
+            const numericVotes = parseFloat(votes);
+            return isNaN(numericVotes) ? sum : sum + numericVotes;
+          }, 0) + 1;
         const optionsLi = document.querySelectorAll("li");
 
         optionsLi.forEach((val) => {
           const option = val.id;
+          const votes = optionsFromServer[option];
+          console.log(option, votes);
+
           val.removeEventListener("click", pplClick);
           val.classList.add("lins");
           val.style.color = "#0f172a";
-          if (maxNumberOfVotes !== 0) {
+
+          if (sumOfVotes !== 0) {
             if (selected == option) {
               val.style.width =
-                optionsFromServer[option] === 0
-                  ? "5%"
-                  : `${
-                      (optionsFromServer[option] + 1 / maxNumberOfVotes) * 100
-                    }%`;
+                votes === 0 ? "5%" : `${((votes + 1) / sumOfVotes) * 100}%`;
             } else {
               val.style.width =
                 optionsFromServer[option] === 0
-                  ? "5%"
-                  : `${(optionsFromServer[option] / maxNumberOfVotes) * 100}%`;
+                  ? "0%"
+                  : `${(optionsFromServer[option] / sumOfVotes) * 100}%`;
             }
           }
         });
 
-        const res = await fetch("/vote", {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            id,
-            vote: selected,
-          }),
-        });
+        if (selected) {
+          const res = await fetch("/vote", {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+              id,
+              vote: selected,
+            }),
+          });
+        }
       }
     </script>
   </body>
