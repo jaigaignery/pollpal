@@ -38,6 +38,7 @@
 
       main {
         max-width: 800px;
+        min-width: 700px;
         margin: 0 auto;
         display: flex;
         flex: 1;
@@ -48,8 +49,6 @@
 
       main > h1 {
         font-weight: 800;
-        /* -webkit-text-stroke: 1.5px cyan;
-          -webkit-text-fill-color: transparent; */
         color: cyan;
         text-shadow: 0 0 4px skyblue;
         text-align: center;
@@ -57,6 +56,7 @@
         margin: 32px 0;
         text-transform: uppercase;
         border-bottom: 1px solid cyan;
+        cursor: pointer;
       }
 
       #options {
@@ -66,7 +66,7 @@
         width: 100%;
       }
 
-      ul li {
+      ul div li {
         text-transform: capitalize;
         list-style: none;
         user-select: none;
@@ -76,6 +76,7 @@
         padding: 8px;
         max-width: 100% !important;
         min-width: fit-content;
+        color: white !important;
       }
 
       ul li i {
@@ -83,22 +84,22 @@
         color: white !important;
       }
 
-      ul li:hover {
-        color: greenyellow;
+      ul div:hover {
         background: black;
-        border-left: 1px solid greenyellow;
       }
 
-      .lins:nth-child(3n) {
-        background: linear-gradient(to right, #00c9ff, #92fe9d);
+      .lins {
+        background: linear-gradient(to right, navy, navy);
       }
 
-      .lins:nth-child(3n + 1) {
-        background: linear-gradient(to right, #fc00ff, #00dbde);
+      .option-container {
+        padding: 0;
+        border: 1px solid grey;
       }
 
-      .lins:nth-child(3n + 2) {
-        background: linear-gradient(to right, #d38312, #a83279);
+      span {
+        text-align: left;
+        margin-right: auto;
       }
 
       #url {
@@ -127,14 +128,19 @@
   </head>
   <body>
     <main>
-      <h1></h1>
+      <h1 onclick="copyToClipboard()"></h1>
       <ul id="options"></ul>
+      <span></span>
     </main>
     <footer>
       <a href="/"><i class="fa-solid fa-house"></i></a>
     </footer>
 
     <script>
+      function copyToClipboard() {
+        navigator.clipboard.writeText(window.location.href);
+        alert("Copied to clipboard!");
+      }
       const id = window.location.pathname.replaceAll("/", "");
       const question = document.querySelector("main > h1");
       const optionsList = document.querySelector("ul");
@@ -156,7 +162,7 @@
 
         let newInnerListHTML = "";
         Object.keys(data.options).forEach((option, index) => {
-          newInnerListHTML += `<li id="${option}"><i class="fa-solid fa-atom"></i>${option}</li>`;
+          newInnerListHTML += `<div class="option-container"><li id="${option}">${option}</li></div>`;
         });
         optionsList.innerHTML = newInnerListHTML;
         const optionsLi = document.querySelectorAll("li");
@@ -168,12 +174,14 @@
 
       async function pplClick(index) {
         const selected = index.target.id;
+        const totalVoteElement = document.querySelector("span");
         const voteValues = Object.values(optionsFromServer);
         const sumOfVotes =
           voteValues.reduce((sum, votes) => {
             const numericVotes = parseFloat(votes);
             return isNaN(numericVotes) ? sum : sum + numericVotes;
           }, 0) + 1;
+        totalVoteElement.innerHTML = `${sumOfVotes} total votes`;
         const optionsLi = document.querySelectorAll("li");
 
         optionsLi.forEach((val) => {
@@ -188,7 +196,7 @@
           if (sumOfVotes !== 0) {
             if (selected == option) {
               val.style.width =
-                votes === 0 ? "5%" : `${((votes + 1) / sumOfVotes) * 100}%`;
+                votes === 0 ? "0%" : `${((votes + 1) / sumOfVotes) * 100}%`;
             } else {
               val.style.width =
                 optionsFromServer[option] === 0
