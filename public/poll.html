@@ -85,6 +85,7 @@
         border: 1px solid white;
         position: relative;
         min-height: 50px;
+        margin-bottom: 10px;
       }
 
       ul .option-container:hover {
@@ -102,9 +103,28 @@
         z-index: 1; /* Set a lower z-index for .vote-meter */
       }
 
+      .percentage-span {
+        border: 1px solid transparent;
+        max-width: 100% !important;
+        color: white;
+        z-index: 2; /* Set a higher z-index for li elements */
+        position: absolute; /* Ensure relative positioning */
+        margin-top: 15px;
+        margin-right: 10px;
+        top: 0;
+        right: 0;
+      }
+
       span {
         text-align: left;
         margin-right: auto;
+      }
+
+      #under-list {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
       }
 
       #url {
@@ -135,7 +155,10 @@
     <main>
       <h1 onclick="copyToClipboard()"></h1>
       <ul id="options"></ul>
-      <span></span>
+      <div id="under-list">
+        <span id="total-vote-span"></span
+        ><button onclick="pplClick()">Show Results</button>
+      </div>
     </main>
     <footer>
       <a href="/"><i class="fa-solid fa-house"></i></a>
@@ -167,7 +190,7 @@
 
         let newInnerListHTML = "";
         Object.keys(data.options).forEach((option, index) => {
-          newInnerListHTML += `<div class="option-container" id="${option}"><div class="vote-meter">&nbsp;</div><li id="${option}">${option}</li></div>`;
+          newInnerListHTML += `<div class="option-container" id="${option}"><div class="vote-meter">&nbsp;</div><li id="${option}">${option}</li><span class="percentage-span"></span></div>`;
         });
 
         optionsList.innerHTML = newInnerListHTML;
@@ -176,42 +199,63 @@
           document.querySelectorAll(".option-container");
 
         for (let i = 0; i < optionsContainers.length; i++) {
-          optionsContainers[i].addEventListener("click", pplClick);
+          optionsContainers[i].addEventListener("click", (index) =>
+            pplClick(index, true)
+          );
         }
       }
       onLoad();
 
-      async function pplClick(index) {
-        const selected = index.target.id;
-        console.log(selected);
-        const totalVoteElement = document.querySelector("span");
+      async function pplClick(index, voted) {
+        const totalVoteElement = document.querySelector("#total-vote-span");
         const voteValues = Object.values(optionsFromServer);
-        const sumOfVotes =
-          voteValues.reduce((sum, votes) => {
-            const numericVotes = parseFloat(votes);
-            return isNaN(numericVotes) ? sum : sum + numericVotes;
-          }, 0) + 1;
+        var sumOfVotes = voteValues.reduce((sum, votes) => {
+          const numericVotes = parseFloat(votes);
+          return isNaN(numericVotes) ? sum : sum + numericVotes;
+        }, 0);
+
+        var selected;
+
+        if (voted) {
+          selected = index.target.id;
+          sumOfVotes++;
+          console.log(selected);
+        }
+
         totalVoteElement.innerHTML = `${sumOfVotes} total votes`;
         const optionsLi = document.querySelectorAll("li");
         const voteMeters = document.querySelectorAll(".vote-meter");
+        const percentageSpans = document.querySelectorAll(".percentage-span");
         const optionsContainers =
           document.querySelectorAll(".option-container");
         console.log(optionsContainers);
 
         for (let i = 0; i < optionsLi.length; i++) {
+          var votes;
           const val = optionsLi[i];
           const voteMeterVal = voteMeters[i];
           const optionsContainerVal = optionsContainers[i];
+          const percentageSpanVal = percentageSpans[i];
+
           const option = val.id;
-          const votes = optionsFromServer[option];
+
+          if (voted && selected == option) {
+            votes = optionsFromServer[option] + 1;
+          } else {
+            votes = optionsFromServer[option];
+          }
+
           console.log(option, votes);
 
           optionsContainerVal.removeEventListener("click", pplClick);
 
+          percentageSpanVal.innerHTML =
+            votes === 0 ? "0%" : `${((votes / sumOfVotes) * 100).toFixed(2)}%`;
+
           if (sumOfVotes !== 0) {
             if (selected == option) {
               voteMeterVal.style.width =
-                votes + 1 === 0 ? "0%" : `${((votes + 1) / sumOfVotes) * 100}%`;
+                votes === 0 ? "0%" : `${(votes / sumOfVotes) * 100}%`;
               val.style.color = "#7DF9FF";
               voteMeterVal.style.backgroundColor = "#7DF9FF";
               voteMeterVal.style.opacity = "20%";
