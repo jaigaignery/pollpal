@@ -38,7 +38,6 @@
 
       main {
         max-width: 800px;
-        min-width: 700px;
         margin: 0 auto;
         display: flex;
         flex: 1;
@@ -155,20 +154,20 @@
     <main>
       <h1 onclick="copyToClipboard()"></h1>
       <ul id="options"></ul>
-      <div id="under-list">
-        <span id="total-vote-span"></span
-        ><button onclick="pplClick()">Show Results</button>
-      </div>
+      <span id="total-vote-span"></span>
     </main>
     <footer>
       <a href="/"><i class="fa-solid fa-house"></i></a>
     </footer>
 
     <script>
+      onLoad();
+
       function copyToClipboard() {
         navigator.clipboard.writeText(window.location.href);
         alert("Copied to clipboard!");
       }
+
       const id = window.location.pathname.replaceAll("/", "");
       const question = document.querySelector("main > h1");
       const optionsList = document.querySelector("ul");
@@ -204,9 +203,8 @@
           );
         }
       }
-      onLoad();
 
-      async function pplClick(index, voted) {
+      async function pplClick(index) {
         const totalVoteElement = document.querySelector("#total-vote-span");
         const voteValues = Object.values(optionsFromServer);
         var sumOfVotes = voteValues.reduce((sum, votes) => {
@@ -216,11 +214,8 @@
 
         var selected;
 
-        if (voted) {
-          selected = index.target.id;
-          sumOfVotes++;
-          console.log(selected);
-        }
+        selected = index.target.id;
+        sumOfVotes++;
 
         totalVoteElement.innerHTML = `${sumOfVotes} total votes`;
         const optionsLi = document.querySelectorAll("li");
@@ -239,7 +234,7 @@
 
           const option = val.id;
 
-          if (voted && selected == option) {
+          if (selected == option) {
             votes = optionsFromServer[option] + 1;
           } else {
             votes = optionsFromServer[option];
