@@ -22,7 +22,7 @@ Pollpal makes use of various web technologies and languages to make it a seamles
 
 ## Installation
 
-A hosted version of Pollpal can be found here:
+A hosted version of Pollpal can be found here: [Not yet hosted]
 
 If you would like to install or inspect it on your machine you will need Git and Node.js installed.
 Once you have those installed, follow these instructions:
