@@ -199,11 +199,9 @@
         const optionsContainers =
           document.querySelectorAll(".option-container");
 
-        for (let i = 0; i < optionsContainers.length; i++) {
-          optionsContainers[i].addEventListener("click", (index) =>
-            pplClick(index, true)
-          );
-        }
+        optionsContainers.forEach((option) => {
+          option.addEventListener("click", pplClick);
+        });
       }
 
       async function pplClick(index) {
