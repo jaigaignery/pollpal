@@ -1,37 +1,43 @@
 const express = require("express");
 const app = express();
 const port = 8383;
-
-const { readDb, writeDb } = require("./dbFunctions");
+const { db } = require("./firebase");
 
 app.use(express.static("public"));
 app.use(express.json());
 
-//HTTP Routes
-app.post("/", (req, res) => {
+//routes HTTP verbs
+app.post("/", async (req, res) => {
   const { id, question, options } = req.body;
 
   if (!id || !question || options.length == 0) {
     res.status(400).send({ status: "error" });
   }
-
-  const currentPolls = readDb();
-  writeDb({
-    ...currentPolls,
-    [id]: {
-      question,
-      options: Array.from(options).reduce((acc, curr) => {
-        return { ...acc, [curr]: 0 };
-      }, {}),
+  const docRef = db.collection("polls").doc("polls");
+  await docRef.set(
+    {
+      [id]: {
+        question,
+        options: Array.from(options).reduce((acc, curr) => {
+          return { ...acc, [curr]: 0 };
+        }, {}),
+      },
     },
-  });
+    { merge: true }
+  );
+
+  console.log(id, question, options);
   res.redirect("/" + id);
 });
 
-app.get("/ids", (req, res) => {
-  const ids = readDb();
-  res.status(200).send({ ids: Object.keys(ids) });
+app.get("/ids", async (req, res) => {
+  const pollRef = db.collection("polls").doc("polls");
+  const data = await pollRef.get();
+
+  const polls = data.data();
+  res.status(200).send({ ids: Object.keys(polls) });
 });
+// GET POST PUT DELETE
 
 app.get("/:id", (req, res) => {
   const { id } = req.params;
@@ -40,24 +46,40 @@ app.get("/:id", (req, res) => {
     return res
       .status(200)
       .sendFile("poll.html", { root: __dirname + "/public" });
-  } catch {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     res.sendStatus(500);
   }
 });
 
-app.get("/data/:id", (req, res) => {
+app.get("/data/:id", async (req, res) => {
   const { id } = req.params;
-  const data = readDb()[id];
-  res.status(200).send({ data });
+
+  const pollRef = db.collection("polls").doc("polls");
+  const data = await pollRef.get();
+
+  const polls = data.data();
+  if (!Object.keys(polls).includes(id)) {
+    return res.redirect("/");
+  }
+  res.status(200).send({ data: polls[id] });
 });
 
-app.post("/vote", (req, res) => {
-  console.log(req.body);
+app.post("/vote", async (req, res) => {
   const { id, vote } = req.body;
-  const data = readDb();
+  const pollRef = db.collection("polls").doc("polls");
+  const polls = await pollRef.get();
+
+  const data = polls.data();
   data[id]["options"][vote] += 1;
-  writeDb(data);
+  const docRef = db.collection("polls").doc("polls");
+
+  await docRef.set(
+    {
+      ...data,
+    },
+    { merge: true }
+  );
   res.sendStatus(200);
 });
 

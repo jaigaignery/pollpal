@@ -10,6 +10,7 @@ Pollpal makes use of various web technologies and languages to make it a seamles
 - CSS
 - Vanilla JavaScript
 - Node.js
+- Express.js
 - Google Firebase
 
 ## Key Features
@@ -42,5 +43,5 @@ Once you have those installed, follow these instructions:
 
 I am always looking to add features to and polish Pollpal. Here are some improvements I plan to make in the near future:
 
-- Copy/Copied to clipboard tooltip
+- Change "Copy/Copied to clipboard" alert to tooltip
 - Populate vote count based on server response, instead of adding +1 to vote count on front end and assuming successful vote POST.
