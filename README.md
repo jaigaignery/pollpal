@@ -42,6 +42,5 @@ Once you have those installed, follow these instructions:
 
 I am always looking to add features to and polish Pollpal. Here are some improvements I plan to make in the near future:
 
-- CSS overhaul (colours and fonts).
+- Copy/Copied to clipboard tooltip
 - Populate vote count based on server response, instead of adding +1 to vote count on front end and assuming successful vote POST.
-- Rework poll creation page

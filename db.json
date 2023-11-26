@@ -1,12 +1,1 @@
-{
-  "1": { "question": "True or false", "options": { "True": 61, "False": 62 } },
-  "2": {
-    "question": "Which city is your favourite to visit?",
-    "options": {
-      "Montreal": 139,
-      "Toronto": 135,
-      "Ottawa": 135,
-      "Vancouver": 133
-    }
-  }
-}
+{"1":{"question":"True or false","options":{"True":61,"False":63}},"2":{"question":"Which city is your favourite to visit?","options":{"Montreal":139,"Toronto":135,"Ottawa":135,"Vancouver":133}}}

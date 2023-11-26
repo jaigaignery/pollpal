@@ -42,19 +42,20 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 8px;
+        gap: 15px;
         width: 90vw;
         max-width: 800px;
       }
 
       form h1 {
+        font-size: 50px;
         font-weight: 800;
         letter-spacing: 1.5px;
         color: hsl(180, 100%, 80%);
         text-shadow: 0 0 8px skyblue;
         text-align: center;
         user-select: none;
-        margin: 32px 0;
+        margin: 32px 0px;
       }
 
       form > input,
@@ -64,8 +65,17 @@
         background: transparent;
         outline: none;
         color: white;
-        padding: 6px 4px;
+        padding: 10px;
         border: none;
+        font-size: 1rem;
+      }
+
+      form label {
+        display: flex;
+        align-items: center;
+        border: solid 1px rgb(172, 172, 172);
+        margin-bottom: 10px;
+        height: 50px;
       }
 
       form > div {
@@ -73,7 +83,6 @@
         flex-direction: column;
         flex: 1;
         width: 100%;
-        gap: 5px;
         align-items: center;
         justify-content: space-between;
       }
@@ -84,20 +93,16 @@
         width: fit-content;
       }
 
-      form div div:hover {
-        transform: scale(1.25);
-      }
-
       form div input {
         width: 100%;
         background: cyan;
         color: black;
-        border: none;
-        padding: 8px;
+        border: 1px solid cyan;
+        padding: 10px;
         cursor: pointer;
         font-weight: 600;
         font-size: 1.2rem;
-        margin: 18px auto;
+        margin: 36px 0;
       }
 
       form div input:hover {
@@ -108,7 +113,7 @@
       #question {
         border: 1px solid transparent;
         border-bottom: 1px solid aqua;
-        margin: 4px 0 12px 0;
+        margin: 4px 0 30px 0;
         font-size: 1.2rem;
         padding: 14px 12px;
       }
@@ -130,14 +135,16 @@
         padding: 6px 3px;
       }
 
-      .options:hover {
-        border-bottom: 1px solid greenyellow;
+      #add-rmv {
+        display: inline-flex;
+        gap: 45px;
+        margin: 20px;
+        font-size: 1.8rem;
       }
 
-      form label {
-        display: flex;
-        align-items: center;
-        gap: 10px;
+      #add:hover,
+      #remove:hover {
+        transform: scale(1.25);
       }
     </style>
   </head>
@@ -157,21 +164,21 @@
         <input type="text" required class="options" placeholder="Option 2" />
       </label>
       <div id="buttons">
-        <div id="add"><i class="fa-solid fa-plus"></i></div>
-        <input type="submit" value="POLL" />
+        <div id="add-rmv">
+          <div id="add"><i class="fa-solid fa-plus"></i></div>
+          <div id="remove"><i class="fa-solid fa-minus"></i></div>
+        </div>
+        <input type="submit" value="CREATE POLL" />
       </div>
     </form>
 
     <script>
       const labels = document.querySelectorAll("form label");
 
-      labels.forEach((label) => {
-        label.innerHTML = `<i class="fa-solid fa-atom"></i> ${label.innerHTML}`;
-      });
-
       let optionCount = document.querySelectorAll(".options").length;
 
       const addBtn = document.getElementById("add");
+      const removeBtn = document.getElementById("remove");
       const form = document.querySelector("form");
       const btns = document.getElementById("buttons");
 
@@ -180,12 +187,21 @@
         form.insertBefore(newNode, btns);
         document.querySelector(
           "label:last-of-type"
-        ).innerHTML = `<i class="fa-solid fa-atom"></i> <input type="text" required class="options" placeholder="Option ${
+        ).innerHTML = `<input type="text" required class="options" placeholder="Option ${
           optionCount + 1
         }"/>`;
         optionCount++;
       }
       addBtn.addEventListener("click", addOption);
+
+      function removeOption() {
+        if (optionCount > 1) {
+          const targetNode = document.querySelector("label:last-of-type");
+          targetNode.remove();
+          optionCount--;
+        }
+      }
+      removeBtn.addEventListener("click", removeOption);
 
       async function handleSubmit(e) {
         e.preventDefault();
