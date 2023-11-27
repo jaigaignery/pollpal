@@ -1,2 +1,4 @@
 node_modules
 pollpal-server-cred.json
+# Local Netlify folder
+.netlify
