@@ -10,7 +10,7 @@ const {
   Filter,
 } = require("firebase-admin/firestore");
 
-const serviceAccount = require("./pollpal-server-cred.json");
+const serviceAccount = require(process.env.FIREBASE_CONFIG);
 
 initializeApp({
   credential: cert(serviceAccount),
