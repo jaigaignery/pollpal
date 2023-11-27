@@ -28,4 +28,3 @@ I am always looking to add features to and polish Pollpal. Here are some improve
 
 - Change "Copy/Copied to clipboard" alert to tooltip
 - Populate vote count based on server response, instead of adding +1 to vote count on front end and assuming successful vote POST.
-- Railway hosting
