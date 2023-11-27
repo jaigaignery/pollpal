@@ -1,6 +1,6 @@
 # Pollpal
 
-[URL]
+<https://pollpal-production.up.railway.app/>
 
 PollPal is a user-friendly polling app designed to simplify the process of creating and participating in polls. With PollPal, users can effortlessly create polls, share them with others, and gather opinions on any topic. The app's intuitive interface and unique URL system make it convenient for both poll creators and participants.
 
