@@ -83,4 +83,6 @@ app.post("/vote", async (req, res) => {
   res.sendStatus(200);
 });
 
-app.listen(port, () => console.log(`Server has started on port: ${port}`));
+app.listen(port, "0.0.0.0", () =>
+  console.log(`Server listening on port ${port}`)
+);
